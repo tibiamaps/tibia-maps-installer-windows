@@ -1,0 +1,9 @@
+language: cpp
+script:
+  - "./scripts/fetch-dependencies"
+  - "git status && git diff-index --quiet HEAD --"
+git:
+  depth: 1
+branches:
+  only:
+    - master

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+tmp_dir="$(mktemp -d)";
+zip_file_name="$(mktemp)";
+
+function fetch_and_unzip() {
+	url="${1}";
+	curl --progress-bar "${url}" > "${zip_file_name}";
+	unzip -o -d "${tmp_dir}" "${zip_file_name}";
+	rm "${zip_file_name}";
+}
+
+# http://nsis.sourceforge.net/ZipDLL_plug-in
+echo 'Fetching ZipDLL plugin…';
+fetch_and_unzip 'http://nsis.sourceforge.net/mediawiki/images/d/d9/ZipDLL.zip';
+cp "${tmp_dir}/ZipDLL.dll" dependencies/Plugins/ZipDLL.dll;
+cp "${tmp_dir}/zipdll.nsh" dependencies/Include/zipdll.nsh;
+
+# http://nsis.sourceforge.net/FindProcDLL_plug-in
+echo 'Fetching FindProcDLL plugin…';
+fetch_and_unzip 'http://nsis.sourceforge.net/mediawiki/images/3/3c/FindProc.zip';
+cp "${tmp_dir}/FindProcDLL.dll" dependencies/Plugins/FindProcDLL.dll;

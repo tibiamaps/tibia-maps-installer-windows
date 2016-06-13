@@ -1,6 +1,6 @@
 Name "Tibia maps"
 OutFile "Tibia-maps-installer.exe"
-BrandingText ""
+BrandingText " "
 Icon "icon.ico"
 Caption "Tibia maps installer by TibiaMaps.io"
 VIProductVersion "1.0.0.0"
@@ -24,9 +24,9 @@ IntCmp $R0 1 0 notRunning
 	MessageBox MB_OK|MB_ICONEXCLAMATION "Tibia is running. Please close it first." /SD IDOK
 	goto end
 notRunning: ; If Tibia isn’t running, start downloading the map files.
-NSISdl::download "https://tibiamaps.io/downloads/with-markers" "$pluginsdir\Automap.zip"
+inetc::get "https://tibiamaps.io/downloads/with-markers" "$pluginsdir\Automap.zip" /END
 Pop $R0 ; Get the return value.
-StrCmp $R0 "success" +3
+StrCmp $R0 "OK" +3
 	MessageBox MB_OK "Download failed; try again later."
 	Quit
 Pop $0
@@ -38,9 +38,9 @@ IntCmp $R0 1 0 notRunning
 	MessageBox MB_OK|MB_ICONEXCLAMATION "Tibia is running. Please close it first." /SD IDOK
 	goto end
 notRunning: ; If Tibia isn’t running, start downloading the map files.
-NSISdl::download "https://tibiamaps.io/downloads/without-markers" "$pluginsdir\Automap.zip"
+inetc::get "https://tibiamaps.io/downloads/without-markers" "$pluginsdir\Automap.zip" /END
 Pop $R0 ; Get the return value.
-StrCmp $R0 "success" +3
+StrCmp $R0 "OK" +3
 	MessageBox MB_OK "Download failed; try again later."
 	Quit
 Pop $0
@@ -59,7 +59,7 @@ IfFileExists "$APPDATA\Tibia\Automap\*.*" folderExist
 goto folderDontExist
 folderExist:
 DetailPrint "Removing old map files..."
-DetailPrint "Deleting `$APPDATA\Tibia\Automap`..."
+DetailPrint "Deleting $APPDATA\Tibia\Automap..."
 RMDir /r "$APPDATA\Tibia\Automap"
 folderDontExist:
 DetailPrint "Installing new map files..."
@@ -72,8 +72,12 @@ SectionEnd
 Function .onInit
 Initpluginsdir ; Make sure `$pluginsdir` exists.
 StrCpy $1 ${P1} ; The default.
-SectionSetSize ${P1} 104893 ; Size (KB) of uncompressed ZIP with marker data.
-SectionSetSize ${P2} 104861 ; Size (KB) of uncompressed ZIP without marker data.
+; Size (KB) of uncompressed ZIP with marker data.
+; unzip -l Automap-with-markers.zip | tail -n 1
+SectionSetSize ${P1} 105689
+ ; Size (KB) of uncompressed ZIP without marker data.
+ ; unzip -l Automap-without-markers.zip | tail -n 1
+SectionSetSize ${P2} 105647
 FunctionEnd
 
 ; Ensure only a single checkbox can be checked at any time.

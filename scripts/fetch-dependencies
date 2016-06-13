@@ -10,13 +10,18 @@ function fetch_and_unzip() {
 	rm "${zip_file_name}";
 }
 
+# http://nsis.sourceforge.net/FindProcDLL_plug-in
+echo 'Fetching FindProcDLL plugin…';
+fetch_and_unzip 'http://nsis.sourceforge.net/mediawiki/images/3/3c/FindProc.zip';
+cp "${tmp_dir}/FindProcDLL.dll" dependencies/Plugins/FindProcDLL.dll;
+
+# http://nsis.sourceforge.net/Inetc_plug-in
+echo 'Fetching Inetc plugin';
+fetch_and_unzip 'http://nsis.sourceforge.net/mediawiki/images/c/c9/Inetc.zip';
+cp "${tmp_dir}/Plugins/x86-ansi/INetC.dll" dependencies/Plugins/INetC.dll;
+
 # http://nsis.sourceforge.net/ZipDLL_plug-in
 echo 'Fetching ZipDLL plugin…';
 fetch_and_unzip 'http://nsis.sourceforge.net/mediawiki/images/d/d9/ZipDLL.zip';
 cp "${tmp_dir}/ZipDLL.dll" dependencies/Plugins/ZipDLL.dll;
 cp "${tmp_dir}/zipdll.nsh" dependencies/Include/zipdll.nsh;
-
-# http://nsis.sourceforge.net/FindProcDLL_plug-in
-echo 'Fetching FindProcDLL plugin…';
-fetch_and_unzip 'http://nsis.sourceforge.net/mediawiki/images/3/3c/FindProc.zip';
-cp "${tmp_dir}/FindProcDLL.dll" dependencies/Plugins/FindProcDLL.dll;

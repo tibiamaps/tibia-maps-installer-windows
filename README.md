@@ -1,6 +1,6 @@
 # Tibia maps installer for Windows [![Build status](https://travis-ci.org/tibiamaps/tibia-maps-installer-windows.svg)](https://travis-ci.org/tibiamaps/tibia-maps-installer-windows)
 
-[NSIS](http://nsis.sourceforge.net/) source code for an executable that downloads the latest version of the `Automap` data provided by [the tibia-map-data project](https://github.com/tibiamaps/tibia-map-data) and extracts it to the `%APPDATA%\Tibia\Automap` folder.
+[NSIS](http://nsis.sourceforge.net/) source code for an executable that downloads the latest version of the Tibia map data provided by [the tibia-map-data project](https://github.com/tibiamaps/tibia-map-data) and extracts it to the `%LOCALAPPDATA%\Tibia\packages\Tibia\minimap` folder.
 
 ## Creating the `.exe` installer
 

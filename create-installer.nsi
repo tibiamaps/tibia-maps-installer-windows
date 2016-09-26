@@ -1,15 +1,15 @@
 Name "Tibia maps"
-OutFile "Tibia-maps-installer.exe"
+OutFile "Tibia-11-maps-installer.exe"
 BrandingText " "
 Icon "icon.ico"
-Caption "Tibia maps installer by TibiaMaps.io"
+Caption "Tibia 11 maps installer by TibiaMaps.io"
 VIProductVersion "1.0.0.0"
 VIAddVersionKey CompanyName "TibiaMaps.io"
-VIAddVersionKey FileDescription "Tibia maps installer, powered by the TibiaMaps.io maps."
+VIAddVersionKey FileDescription "Tibia maps installer for Tibia 11, powered by the TibiaMaps.io maps."
 VIAddVersionKey FileVersion "1.0.0"
 VIAddVersionKey LegalCopyright TibiaMaps.io
-VIAddVersionKey OriginalFilename "Tibia maps installer.exe"
-VIAddVersionKey ProductName "Tibia maps installer"
+VIAddVersionKey OriginalFilename "Tibia 11 maps installer.exe"
+VIAddVersionKey ProductName "Tibia 11 maps installer"
 
 !include "Sections.nsh" ; Include the plugin for checkboxes.
 !include "zipdll.nsh" ; Include the ZIP plugin.
@@ -19,12 +19,12 @@ Page instfiles
 
 ; Set up the selection screen.
 Section "Tibia maps with markers" P1
-FindProcDLL::FindProc "Tibia.exe" ; Show an error if Tibia is running.
+FindProcDLL::FindProc "client.exe" ; Show an error if Tibia is running.
 IntCmp $R0 1 0 notRunning
 	MessageBox MB_OK|MB_ICONEXCLAMATION "Tibia is running. Please close it first." /SD IDOK
 	goto end
 notRunning: ; If Tibia isn’t running, start downloading the map files.
-inetc::get "https://tibiamaps.io/downloads/with-markers" "$pluginsdir\Automap.zip" /END
+inetc::get "https://tibiamaps.io/downloads/minimap-with-markers" "$pluginsdir\minimap.zip" /END
 Pop $R0 ; Get the return value.
 StrCmp $R0 "OK" +3
 	MessageBox MB_OK "Download failed; try again later."
@@ -38,7 +38,7 @@ IntCmp $R0 1 0 notRunning
 	MessageBox MB_OK|MB_ICONEXCLAMATION "Tibia is running. Please close it first." /SD IDOK
 	goto end
 notRunning: ; If Tibia isn’t running, start downloading the map files.
-inetc::get "https://tibiamaps.io/downloads/without-markers" "$pluginsdir\Automap.zip" /END
+inetc::get "https://tibiamaps.io/downloads/minimap-without-markers" "$pluginsdir\minimap.zip" /END
 Pop $R0 ; Get the return value.
 StrCmp $R0 "OK" +3
 	MessageBox MB_OK "Download failed; try again later."
@@ -52,20 +52,20 @@ Section
 IntCmp $R0 1 0 notRunning
 	Quit
 notRunning:
-IfFileExists "$pluginsdir\Automap.zip" fileExist
+IfFileExists "$pluginsdir\minimap.zip" fileExist
 Quit
 fileExist:
-IfFileExists "$APPDATA\Tibia\Automap\*.*" folderExist
+IfFileExists "$LOCALAPPDATA\Tibia\packages\Tibia\minimap\*.*" folderExist
 goto folderDontExist
 folderExist:
 DetailPrint "Removing old map files..."
-DetailPrint "Deleting $APPDATA\Tibia\Automap..."
-RMDir /r "$APPDATA\Tibia\Automap"
+DetailPrint "Deleting $LOCALAPPDATA\Tibia\packages\Tibia\minimap..."
+RMDir /r "$LOCALAPPDATA\Tibia\packages\Tibia\minimap"
 folderDontExist:
 DetailPrint "Installing new map files..."
-!insertmacro ZIPDLL_EXTRACT "$pluginsdir\Automap.zip" "$APPDATA\Tibia" "<ALL>"
+!insertmacro ZIPDLL_EXTRACT "$pluginsdir\minimap.zip" "$LOCALAPPDATA\Tibia\packages\Tibia" "<ALL>"
 DetailPrint "Cleaning up temporary files..."
-Delete "$pluginsdir\Automap.zip"
+Delete "$pluginsdir\minimap.zip"
 SectionEnd
 
 ; Startup checks and variables.
@@ -73,11 +73,11 @@ Function .onInit
 Initpluginsdir ; Make sure `$pluginsdir` exists.
 StrCpy $1 ${P1} ; The default.
 ; Size (KB) of uncompressed ZIP with marker data.
-; unzip -l Automap-with-markers.zip | tail -n 1
-SectionSetSize ${P1} 105689
+; unzip -l minimap-with-markers.zip | tail -n 1 | bytes_to_kilobytes
+SectionSetSize ${P1} 4965
  ; Size (KB) of uncompressed ZIP without marker data.
- ; unzip -l Automap-without-markers.zip | tail -n 1
-SectionSetSize ${P2} 105647
+ ; unzip -l minimap-without-markers.zip | tail -n 1 | bytes_to_kilobytes
+SectionSetSize ${P2} 4913
 FunctionEnd
 
 ; Ensure only a single checkbox can be checked at any time.

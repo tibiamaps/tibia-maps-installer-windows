@@ -47,6 +47,34 @@ Pop $0
 end:
 SectionEnd
 
+Section /o "Tibia maps with grid overlay and markers" P3
+IntCmp $R0 1 0 notRunning
+	MessageBox MB_OK|MB_ICONEXCLAMATION "Tibia is running. Please close it first." /SD IDOK
+	goto end
+notRunning: ; If Tibia isn’t running, start downloading the map files.
+inetc::get "https://tibiamaps.io/downloads/minimap-with-grid-overlay-and-markers" "$pluginsdir\minimap.zip" /END
+Pop $R0 ; Get the return value.
+StrCmp $R0 "OK" +3
+	MessageBox MB_OK "Download failed; try again later."
+	Quit
+Pop $0
+end:
+SectionEnd
+
+Section /o "Tibia maps with grid overlay without markers" P4
+IntCmp $R0 1 0 notRunning
+	MessageBox MB_OK|MB_ICONEXCLAMATION "Tibia is running. Please close it first." /SD IDOK
+	goto end
+notRunning: ; If Tibia isn’t running, start downloading the map files.
+inetc::get "https://tibiamaps.io/downloads/minimap-with-grid-overlay-without-markers" "$pluginsdir\minimap.zip" /END
+Pop $R0 ; Get the return value.
+StrCmp $R0 "OK" +3
+	MessageBox MB_OK "Download failed; try again later."
+	Quit
+Pop $0
+end:
+SectionEnd
+
 ; Handle the installation.
 Section
 IntCmp $R0 1 0 notRunning
@@ -74,10 +102,16 @@ Initpluginsdir ; Make sure `$pluginsdir` exists.
 StrCpy $1 ${P1} ; The default.
 ; Size (KB) of uncompressed ZIP with marker data.
 ; unzip -l minimap-with-markers.zip | tail -n 1 | bytes_to_kilobytes
-SectionSetSize ${P1} 4965
- ; Size (KB) of uncompressed ZIP without marker data.
- ; unzip -l minimap-without-markers.zip | tail -n 1 | bytes_to_kilobytes
-SectionSetSize ${P2} 4913
+SectionSetSize ${P1} 5648
+; Size (KB) of uncompressed ZIP without marker data.
+; unzip -l minimap-without-markers.zip | tail -n 1 | bytes_to_kilobytes
+SectionSetSize ${P2} 5588
+; Size (KB) of uncompressed ZIP with grid overlay and marker data.
+; unzip -l minimap-with-grid-overlay-and-markers.zip | tail -n 1 | bytes_to_kilobytes
+SectionSetSize ${P3} 5701
+; Size (KB) of uncompressed ZIP with grid overlay without marker data.
+; unzip -l minimap-with-grid-overlay-without-markers.zip | tail -n 1 | bytes_to_kilobytes
+SectionSetSize ${P4} 5641
 FunctionEnd
 
 ; Ensure only a single checkbox can be checked at any time.
@@ -85,5 +119,7 @@ Function .onSelChange
 !insertmacro StartRadioButtons $1
 	!insertmacro RadioButton ${P1}
 	!insertmacro RadioButton ${P2}
+	!insertmacro RadioButton ${P3}
+	!insertmacro RadioButton ${P4}
 !insertmacro EndRadioButtons
 FunctionEnd
